@@ -6,7 +6,7 @@ public interface WidgetRepository {
 
     WidgetModel createWidget(int x, int y, int width, int height, int zOrder);
 
-    boolean updateWidget(int id, int x, int y, int width, int height, int zOrder);
+    WidgetModel updateWidget(int id, int x, int y, int width, int height, int zOrder);
 
     WidgetModel getWidget(int id);
 
