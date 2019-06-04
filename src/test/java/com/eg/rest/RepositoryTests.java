@@ -1,6 +1,7 @@
 package com.eg.rest;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.eg.rest.repository.InMemoryWidgetRepository;
@@ -9,7 +10,12 @@ import com.eg.rest.repository.WidgetRepository;
 
 public class RepositoryTests {
 
-    private final WidgetRepository repository = InMemoryWidgetRepository.getInstance();
+    private WidgetRepository repository;
+
+    @Before
+    public void testInit() {
+        repository = new InMemoryWidgetRepository();
+    }
 
     @Test
     public void testAddWidget() {

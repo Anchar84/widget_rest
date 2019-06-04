@@ -27,6 +27,6 @@ public class AppConfiguration {
 
     @Bean
     public WidgetRepository getWidgetRepository() {
-        return InMemoryWidgetRepository.getInstance();
+        return new InMemoryWidgetRepository();
     }
 }

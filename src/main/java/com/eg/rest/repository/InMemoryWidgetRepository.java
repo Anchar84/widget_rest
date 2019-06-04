@@ -15,13 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class InMemoryWidgetRepository implements WidgetRepository {
 
     private final Map<Integer, WidgetModel> idIndex = new ConcurrentHashMap<>();
-    private static final WidgetRepository INSTANCE = new InMemoryWidgetRepository();
     private final AtomicInteger idGenerator = new AtomicInteger(0);
     private List<WidgetModel> widgets = new CopyOnWriteArrayList<>();
-
-    public static WidgetRepository getInstance() {
-        return INSTANCE;
-    }
 
     @Override
     public WidgetModel createWidget(int x, int y, int width, int height, int zOrder) {
