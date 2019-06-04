@@ -95,6 +95,7 @@ public class InMemoryWidgetRepository implements WidgetRepository {
             //сдвиг всех элементов
             widgets.sort(InMemoryWidgetRepository::compare);
             int pos = Collections.binarySearch(widgets, newWidget);
+            //TODO: возможну нужно увеличивать zindex не у всех подряд, а только когда есть "конфликт", но это потребует более сложного алгоритма
             while (++pos < widgets.size()) {
                 widgets.get(pos).incZIndex();
             }
