@@ -1,8 +1,8 @@
-package com.eg.rest;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.eg.rest.repository;
 
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class WidgetModel implements Comparable<WidgetModel> {
 
@@ -41,27 +41,27 @@ public class WidgetModel implements Comparable<WidgetModel> {
         this.zIndex = zIndex;
     }
 
-    int getId() {
+    public int getId() {
         return id;
     }
 
-    int getX() {
+    public int getX() {
         return x;
     }
 
-    int getY() {
+    public int getY() {
         return y;
     }
 
-    int getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    int getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    int getzIndex() {
+    public int getzIndex() {
         return zIndex;
     }
 

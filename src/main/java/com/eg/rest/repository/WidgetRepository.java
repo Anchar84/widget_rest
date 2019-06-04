@@ -1,4 +1,4 @@
-package com.eg.rest;
+package com.eg.rest.repository;
 
 import java.util.List;
 
@@ -13,4 +13,6 @@ public interface WidgetRepository {
     List<WidgetModel> getAllWidgets();
 
     boolean deleteWidget(int id);
+
+    void clear();
 }

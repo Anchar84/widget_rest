@@ -1,4 +1,4 @@
-package com.eg.rest;
+package com.eg.rest.repository;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +19,7 @@ public class InMemoryWidgetRepository implements WidgetRepository {
     private final AtomicInteger idGenerator = new AtomicInteger(0);
     private List<WidgetModel> widgets = new CopyOnWriteArrayList<>();
 
-    static WidgetRepository getInstance() {
+    public static WidgetRepository getInstance() {
         return INSTANCE;
     }
 
@@ -75,6 +75,14 @@ public class InMemoryWidgetRepository implements WidgetRepository {
             }
         }
         return widget != null;
+    }
+
+    @Override
+    public void clear() {
+        synchronized (this) {
+            idIndex.clear();
+            widgets.clear();
+        }
     }
 
     private WidgetModel saveWidget(int id, int x, int y, int width, int height, int zOrder) {

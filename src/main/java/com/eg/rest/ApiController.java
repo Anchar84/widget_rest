@@ -1,16 +1,25 @@
 package com.eg.rest;
 
-
-import com.eg.rest.request.CreateModifyWidget;
-import com.eg.rest.request.GetRealmWidgets;
-import com.eg.rest.request.GetWidgetsAtPage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.eg.rest.repository.WidgetModel;
+import com.eg.rest.repository.WidgetRepository;
+import com.eg.rest.request.CreateModifyWidget;
+import com.eg.rest.request.WidgetsAtPage;
 
 @RestController
 @RequestMapping("/widgets/")
@@ -89,20 +98,43 @@ public class ApiController {
         return repository.getAllWidgets();
     }
 
-    @GetMapping(value = "/page")
-    public List<WidgetModel> getWidgetAtPage(@RequestBody GetWidgetsAtPage page) {
+    @PostMapping(value = "/search/page/{pageNumber}/{pageSize}")
+    public WidgetsAtPage getWidgetAtPage(@PathVariable int pageSize, @PathVariable int pageNumber) {
+        if (pageNumber < 0 || pageSize <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "page number and page size must be positive");
+        }
         List<WidgetModel> allWidgets = repository.getAllWidgets();
-        return allWidgets.subList(page.getPage() * page.getSize(), (page.getPage() + 1) * page.getSize());
+        int pageCount = allWidgets.size() / pageSize;
+        if (allWidgets.size() % pageSize > 0) {
+            pageCount++;
+        }
+        int startIndex = pageNumber * pageSize;
+        if (startIndex >= allWidgets.size()) {
+            return new WidgetsAtPage(Collections.emptyList(), pageCount);
+        }
+        int endIndex = (pageNumber + 1) * pageSize;
+        if (endIndex >= allWidgets.size()) {
+            endIndex = allWidgets.size();
+        }
+        return new WidgetsAtPage(allWidgets.subList(startIndex, endIndex), pageCount);
     }
 
-    @GetMapping(value = "/realm")
-    public List<WidgetModel> getRealmWidget(@RequestBody GetRealmWidgets realm) {
+    @PostMapping(value = "/search/page/{pageNumber}")
+    public WidgetsAtPage getWidgetAtPageDefault(@PathVariable int pageNumber) {
+        return getWidgetAtPage(10, pageNumber);
+    }
+
+    @GetMapping(value = "/search/realm/{x}/{y}/{width}/{height}")
+    public List<WidgetModel> getRealmWidget(@PathVariable int x, @PathVariable int y, @PathVariable int width, @PathVariable int height) {
+        if (width <= 0 || height <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "width and height must be positive");
+        }
         List<WidgetModel> allWidgets = repository.getAllWidgets();
         return allWidgets.stream() //
-                .filter(w -> w.getX() >= realm.getX() && //
-                        w.getY() >= realm.getY() && //
-                        w.getX() + w.getWidth() < realm.getX() + realm.getWidht() && //
-                        w.getY() + w.getHeight() < realm.getY() + realm.getHeight()) //
-                .collect(Collectors.toList());
+                         .filter(w -> w.getX() >= x && //
+                                      w.getY() >= y && //
+                                      w.getX() + w.getWidth() < x + width && //
+                                      w.getY() + w.getHeight() < y + height) //
+                         .collect(Collectors.toList());
     }
 }
